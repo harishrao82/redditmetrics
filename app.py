@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-st.title('subreddit stats')
+st.title('subreddit stats for /r/onlineaffairs')
 left_column, right_column = st.columns(2)
 DATA_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQrPXtUthoVkidTDvxI4LLeiHvdQaUXciXC_U3MUjwCobukceCTP5vjEgIUWelRKECJm_xnhV_DYnU0/pub?gid=560482593&single=true&output=csv"
 @st.cache
