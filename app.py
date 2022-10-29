@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import praw
+import time
+from datetime import datetime
+import re
 
 st.title('subreddit stats for /r/onlineaffairs')
 left_column, right_column = st.columns(2)
