@@ -10,10 +10,41 @@ st.title('subreddit stats for /r/onlineaffairs')
 left_column, right_column = st.columns(2)
 DATA_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQrPXtUthoVkidTDvxI4LLeiHvdQaUXciXC_U3MUjwCobukceCTP5vjEgIUWelRKECJm_xnhV_DYnU0/pub?gid=560482593&single=true&output=csv"
 @st.cache
-def load_data(nrows):
-    data = pd.read_csv(DATA_URL, nrows=nrows)
-    data['date'] = pd.to_datetime(data['time_est'], errors='coerce')
-    return data
+def load_data(subreddit):
+    reddit = praw.Reddit(client_id='Ppp0O5Dfj9KUEA', client_secret='QBDYcuo9DjOcOLBCppgfbeyuE_g', user_agent='Reddit WebScrap',check_for_async=False)
+    new_posts = reddit.subreddit(subreddit).new(limit=None)
+    dfsub=pd.DataFrame(columns=['time','upvote','downvote','title','body','sex'])
+    i=0
+    for post in new_posts:
+        #print(post.selftext)
+        #print(post.title)
+        row=[]
+        ts = int(post.created_utc)
+        time=datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        row.append(time)
+        row.append(post.ups)
+        row.append(post.downs)
+        row.append(post.title)
+        row.append(post.selftext)
+        m = re.match("(^(\d\d).*([MF]4[MF]))", post.title,flags=re.IGNORECASE)
+        if m:
+            Age=int(m.groups()[1])
+            Sex=m.groups()[2]
+            # #print(Sex)
+            # if Sex == "[M4F]":
+            #   print(post.title)
+            # else:
+            #   print(post.title)
+            row.append(Sex.upper())
+        else:
+            row.append('NA')
+        #print(row)
+        dfsub.loc[i]=row
+        i+=1
+    dfsub['time'] = pd.to_datetime(dfsub['time'])
+    dfsub['time_est']=dfsub.time + pd.DateOffset(hours=-4)
+    dfsub['date'] = pd.to_datetime(dfsub['time_est'], errors='coerce')
+    return dfsub
 
 with right_column:
     # Create a text element and let the reader know the data is loading.
