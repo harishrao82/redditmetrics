@@ -1,4 +1,0 @@
-streamlit==1.10.0
-praw==7.6.0
-prawcore==2.3.0
-
